@@ -49,17 +49,18 @@ function objects() {
                             earthGeometry.parameters.heightSegments
                           );
 
-  var cloudTexture = THREE.ImageUtils.loadTexture("assets/textures/planets/fair_clouds_4k.png");
+  var cloudTexture = THREE.ImageUtils.loadTexture(
+                      "assets/textures/planets/fair_clouds_4k.png");
   var cloudMaterial = new THREE.MeshBasicMaterial({
                           map: cloudTexture,
                           transparent : true,
                           opacity : 0.8
                       });
 
-  cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
+  clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
   
   scene.add(earth);
-  scene.add(cloud);
+  scene.add(clouds);
 }
 
 function lights() {
@@ -72,8 +73,8 @@ function lights() {
 }
 
 function updateEarth() {
-    earth.rotation.y += 0.1;
-    cloud.rotation.y += 0.11;
+    earth.rotation.y += 0.001;
+    clouds.rotation.y += 0.0011;
 }
 
 function addControlGui(controlObject) {
