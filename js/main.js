@@ -91,8 +91,8 @@ function lights() {
 }
 
 function updateEarth() {
-    earth.rotation.y += 0.001;
-    clouds.rotation.y += 0.0011;
+    earth.rotation.y += controls.rotationSpeed;
+    clouds.rotation.y += controls.rotationSpeed * 1.1;
 }
 
 function addControlGui(controlObject) {
