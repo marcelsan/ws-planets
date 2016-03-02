@@ -29,6 +29,16 @@ function init() {
   camera.position.z = 33;
   camera.lookAt(scene.position);
 
+  cameraBG = new THREE.OrthographicCamera( 
+                                    -winWidth, 
+                                    winWidth, 
+                                    winHeight, 
+                                    -winHeight, 
+                                    -10000, 
+                                    10000);
+
+  cameraBG.position.z = 50;
+
   control = new THREE.OrbitControls(camera);
   controls = new function() {
               this.rotationSpeed = 0.001
@@ -36,6 +46,17 @@ function init() {
 
   addControlGui(controls);
 
+  // render passes
+  var bgPass = new THREE.RenderPass(sceneBG, cameraBG);
+  var renderPass = new THREE.RenderPass(scene, camera);
+  renderPass.clear = false;
+  var effectCopy = new THREE.ShaderPass(THREE.CopyShader);
+  effectCopy.renderToScreen = true;
+
+  composer = new THREE.EffectComposer(renderer);
+  composer.addPass(bgPass);
+  composer.addPass(renderPass);
+  composer.addPass(effectCopy);
 
   objects();
   lights();
@@ -77,6 +98,17 @@ function objects() {
 
   clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
   
+  var materialColor = new THREE.MeshBasicMaterial({ 
+                            map: THREE.ImageUtils.loadTexture (
+                                  "assets/textures/planets/starry_background.jpg"
+                                ), 
+                            depthTest: false
+                          });
+  var bgPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), materialColor);
+  bgPlane.position.z = -100;
+  bgPlane.scale.set(winWidth * 2, winHeight * 2, 1);
+
+  sceneBG.add(bgPlane);
   scene.add(earth);
   scene.add(clouds);
 }
@@ -104,6 +136,8 @@ function render() {
   updateEarth();
   control.update();
   renderer.render(scene, camera);
+  renderer.autoClear = false;
+  composer.render();
   requestAnimationFrame(render);
 }
 
