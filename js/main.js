@@ -35,11 +35,31 @@ function init() {
 }
 
 function objects() {
-    var sphereGeometry = new THREE.SphereGeometry(30, 100, 100);
-    var sphereMaterial = new THREE.MeshPhongMaterial(0xeaeaea);
-    earth = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    var earthGeometry = new THREE.SphereGeometry(30, 100, 100);
+    var texture = THREE.ImageUtils.loadTexture(
+                  "assets/textures/planets/earthmap4k.jpg");
+    var sphereMaterial = new THREE.MeshPhongMaterial({
+          map : texture
+        });
+    earth = new THREE.Mesh(earthGeometry, sphereMaterial);
 
-    scene.add(earth);
+  var cloudGeometry = new THREE.SphereGeometry(
+                            earthGeometry.parameters.radius * 1.01,
+                            earthGeometry.parameters.widthSegments,
+                            earthGeometry.parameters.heightSegments
+                          );
+
+  var cloudTexture = THREE.ImageUtils.loadTexture("assets/textures/planets/fair_clouds_4k.png");
+  var cloudMaterial = new THREE.MeshBasicMaterial({
+                          map: cloudTexture,
+                          transparent : true,
+                          opacity : 0.8
+                      });
+
+  cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
+  
+  scene.add(earth);
+  scene.add(cloud);
 }
 
 function lights() {
@@ -53,6 +73,7 @@ function lights() {
 
 function updateEarth() {
     earth.rotation.y += 0.1;
+    cloud.rotation.y += 0.11;
 }
 
 function addControlGui(controlObject) {
