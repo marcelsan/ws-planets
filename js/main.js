@@ -11,6 +11,8 @@ var composer;
 
 var control;
 
+var controls;
+
 var earth;
 var clouds;
 
@@ -27,6 +29,14 @@ function init() {
   camera.position.z = 33;
   camera.lookAt(scene.position);
 
+  control = new THREE.OrbitControls(camera);
+  controls = new function() {
+              this.rotationSpeed = 0.001
+          };
+
+  addControlGui(controls);
+
+
   objects();
   lights();
 
@@ -38,8 +48,16 @@ function objects() {
     var earthGeometry = new THREE.SphereGeometry(30, 100, 100);
     var texture = THREE.ImageUtils.loadTexture(
                   "assets/textures/planets/earthmap4k.jpg");
+    var normalMap = THREE.ImageUtils.loadTexture(
+                  "assets/textures/planets/earth_normalmap_flat4k.jpg");
+    var specularMap = THREE.ImageUtils.loadTexture(
+                  "assets/textures/planets/earthspec4k.jpg"
+                  );
     var sphereMaterial = new THREE.MeshPhongMaterial({
-          map : texture
+          map : texture,
+          normalMap : normalMap,
+          specularMap : specularMap,
+          specular : new THREE.Color(0x262626),
         });
     earth = new THREE.Mesh(earthGeometry, sphereMaterial);
 
@@ -78,11 +96,13 @@ function updateEarth() {
 }
 
 function addControlGui(controlObject) {
-    
+    var gui = new dat.GUI();
+    gui.add(controlObject, 'rotationSpeed', -0.01, 0.01);
 }
 
 function render() {
   updateEarth();
+  control.update();
   renderer.render(scene, camera);
   requestAnimationFrame(render);
 }
