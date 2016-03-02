@@ -26,7 +26,7 @@ function init() {
   camera.position.y = 36;
   camera.position.z = 33;
   camera.lookAt(scene.position);
-  
+
   objects();
   lights();
 
@@ -35,15 +35,24 @@ function init() {
 }
 
 function objects() {
-  
+    var sphereGeometry = new THREE.SphereGeometry(30, 100, 100);
+    var sphereMaterial = new THREE.MeshPhongMaterial(0xeaeaea);
+    earth = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+    scene.add(earth);
 }
 
 function lights() {
+  var ambient = new THREE.AmbientLight(0x111111);
+  var light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(100, 10, -50);
 
+  scene.add(ambient);
+  scene.add(light);
 }
 
 function updateEarth() {
-    
+    earth.rotation.y += 0.1;
 }
 
 function addControlGui(controlObject) {
@@ -52,7 +61,6 @@ function addControlGui(controlObject) {
 
 function render() {
   updateEarth();
-  controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(render);
 }
